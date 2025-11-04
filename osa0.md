@@ -1,3 +1,4 @@
+Tehtävä
 ```mermaid
 sequenceDiagram;
   participant browser;
@@ -16,4 +17,12 @@ sequenceDiagram;
   server -->> browser: HTTP/1.1 200 OK;
   browser ->> server: GET https://studies.cs.helsinki.fi/favicon.ico;
   server -->> browser: HTTP/1.1 404 Not Found;
+```
+```mermaid
+sequenceDiagram;
+  participant browser;
+  participant server;
+
+  browser ->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa;
+  server -->> browser: HTTP/1.1 201 Created;
 ```
