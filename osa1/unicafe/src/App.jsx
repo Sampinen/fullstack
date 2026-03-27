@@ -6,8 +6,17 @@ const Header = (props) => {
   )
 }
 
+const StatisticsLine = props => {
+    return (
+      <p>{props.text} {props.value}</p>
+    )
+
+}
+
 const Statistics = (props) => {
-  if (props.good + props.bad + props.neutral===0) {
+  const all = (props.good + props.bad + props.neutral)
+  const positive = ((props.good/all)*100)+" %"
+  if (all===0) {
     return (
       <div>
         No feedback given
@@ -16,24 +25,28 @@ const Statistics = (props) => {
   }
   return (
     <div>
-      <p>good {props.good}</p>
-      <p> neutral {props.neutral}</p>
-      <p>bad {props.bad}</p>
-      <p>all {props.good + props.bad + props.neutral}</p>
-      <p>average {(props.good -props.bad) / (props.good + props.bad + props.neutral)}</p>
-      <p>positive {(props.good/(props.good + props.bad + props.neutral))*100} %</p>
+      <StatisticsLine text="good" value = {props.good}/>
+      <StatisticsLine text="neutral" value = {props.neutral}/>
+      <StatisticsLine text="bad" value = {props.bad}/>
+      <StatisticsLine text="all" value = {all}/>
+      <StatisticsLine text="average" value = {(props.good -props.bad)/all}/>
+      <StatisticsLine text="positive" value = {positive}/>
       </div>
+  )
+}
+
+const Button = (props) => {
+  const increaseByOne = () => props.setCounter(props.counter + 1)
+  return (
+  <button onClick={increaseByOne}>
+    {props.text}
+  </button>
   )
 }
 
 
 
-
 const App = () => {
-  // tallenna napit omaan tilaansa
-  const increaseByOneG = () => setGood(good + 1)
-  const increaseByOneN = () => setNeutral(neutral + 1)
-  const increaseByOneB = () => setBad(bad + 1)
   const header1 = "give feedback"
   const header2 = "statistics"
   const [good, setGood] = useState(0)
@@ -43,15 +56,9 @@ const App = () => {
   return (
     <div>
       <Header header = {header1}/>
-      <button onClick={increaseByOneG}>
-        good
-      </button>
-      <button onClick={increaseByOneN}>
-        neutral
-      </button>
-      <button onClick={increaseByOneB}>
-        bad
-      </button>
+      <Button counter = {good} setCounter = {setGood} text = "good"/>
+      <Button counter = {neutral} setCounter = {setNeutral} text = "neutral"/>
+      <Button counter = {bad} setCounter = {setBad} text = "bad"/>
       <Header header = {header2}/>
       <Statistics good = {good} neutral = {neutral} bad = {bad}/>
     </div>
