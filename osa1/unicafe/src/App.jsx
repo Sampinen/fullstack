@@ -6,8 +6,17 @@ const Header = (props) => {
   )
 }
 
-const increaseByOne = (props) => {
-  setCounter(props.counter + 1)
+const Statistics = (props) => {
+  return (
+    <div>
+      <p>good {props.good}</p>
+      <p> neutral {props.neutral}</p>
+      <p>bad {props.bad}</p>
+      <p>all {props.good + props.bad + props.neutral}</p>
+      <p>average {(props.good -props.bad) / (props.good + props.bad + props.neutral)}</p>
+      <p>positive {(props.good/(props.good + props.bad + props.neutral))*100} %</p>
+      </div>
+  )
 }
 
 
@@ -37,12 +46,7 @@ const App = () => {
         bad
       </button>
       <Header header = {header2}/>
-      <p>good {good}</p>
-      <p> neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {good + bad + neutral}</p>
-      <p>average {(good -bad) / (good + bad + neutral)}</p>
-      <p>positive {(good/(good + bad + neutral))*100} %</p>
+      <Statistics good = {good} neutral = {neutral} bad = {bad}/>
     </div>
   )
 }
