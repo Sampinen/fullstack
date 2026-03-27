@@ -7,6 +7,13 @@ const Header = (props) => {
 }
 
 const Statistics = (props) => {
+  if (props.good + props.bad + props.neutral===0) {
+    return (
+      <div>
+        No feedback given
+      </div>
+    )
+  }
   return (
     <div>
       <p>good {props.good}</p>
