@@ -37,9 +37,10 @@ const App = () => {
         bad
       </button>
       <Header header = {header2}/>
-      <p>{good}</p>
-      <p>{neutral}</p>
-      <p>{bad}</p>
+      <p>good {good}</p>
+      <p> neutral {neutral}</p>
+      <p>bad {bad}</p>
+
       
     </div>
   )
