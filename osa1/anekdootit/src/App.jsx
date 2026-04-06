@@ -1,13 +1,9 @@
 import { useState } from 'react'
 
 
-  const Vote = (anecdote_ind,votes) => {
-    const copy = [...votes]
-    copy[anecdote_ind] += 1
-  return(
-    copy
-  )
-  }
+
+
+
 
 const App = () => {
   const anecdotes = [
@@ -22,6 +18,8 @@ const App = () => {
   ]
   const [votes,setVotes] = useState(new Array(anecdotes.length).fill(0))
   const [selected, setSelected] = useState(0)
+  const [mostVotes, setMaxVote] = useState(0)
+  const [bestAnecdote, setBestAnecdote] = useState(anecdotes[0])
 
   const randomElement = () => Math.floor(Math.random() * anecdotes.length)
   const nextAnecdote = () => {
@@ -30,8 +28,20 @@ const App = () => {
     )
   }
 
+  const Vote = (anecdote_ind,votes) => {
+    const copy = [...votes];
+    copy[anecdote_ind] += 1;
+    if (copy[anecdote_ind] > mostVotes){
+    setBestAnecdote(anecdotes[anecdote_ind]);
+    setMaxVote(copy[anecdote_ind])
+    }
+  return(
+    copy
+  )
+  }
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
       <p>
       has {votes[selected]} votes
@@ -44,6 +54,13 @@ const App = () => {
        next anecdote
       </button>
       </p>
+    <p>
+    <h1>Anecdote with most votes</h1>
+    <p>
+      {bestAnecdote} 
+    </p>
+    has {mostVotes} votes
+    </p>
     </div>
   )
 }
