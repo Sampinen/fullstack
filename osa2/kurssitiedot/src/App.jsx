@@ -1,43 +1,10 @@
 
-const Header = (props) => {
-  return(
-  <h1>{props.course}</h1>
-  )
-}
 
-const Content = (props) => {
-  return(
-      <div>
-      <Part part={props.part1} exercises={props.exercises1}/>
-      <Part part={props.part2} exercises={props.exercises2}/>
-      <Part part={props.part3} exercises={props.exercises3}/>
-      </div>
-  )
-
-}
-
-const Part = (props) => {
-  return(
-      <p>
-        {props.part} {props.exercises}
-      </p>
-  )
-
-}
-
-const Total = (props) => {
-  return(
-    <p>
-      Number of exercises {props.exercises1 + props.exercises2 + props.exercises3}
-    </p>
-  )
-}
 
 const Course = (props) => {
   const title = props.course.name;
   const courseParts = props.course.parts;
-  let totalExercises = 0;
-  courseParts.forEach((part) => totalExercises += part.exercises)
+  const totalExercises = courseParts.reduce((sum,part) => sum + part.exercises,0)
   const PrintParts = () => {
   return (
     courseParts.map((part) =>(
