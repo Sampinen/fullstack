@@ -34,12 +34,14 @@ const Total = (props) => {
 }
 
 const Course = (props) => {
-  const title = props.course.name
-  const courseParts = props.course.parts
+  const title = props.course.name;
+  const courseParts = props.course.parts;
+  let totalExercises = 0;
+  courseParts.forEach((part) => totalExercises += part.exercises)
   const PrintParts = () => {
   return (
-    courseParts.map((part, id) =>(
-      <p key = {id}> {part.name} {part.exercises} </p>
+    courseParts.map((part) =>(
+      <p key = {part.id}> {part.name} {part.exercises} </p>
     )
   )
        
@@ -50,6 +52,7 @@ const Course = (props) => {
     <>
     <h1>{title}</h1>
     <PrintParts />
+    <p> total of {totalExercises} exercises</p>
     </>
   )
 }
@@ -76,6 +79,11 @@ const App = () => {
         name:'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
