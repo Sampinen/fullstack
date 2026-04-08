@@ -2,9 +2,11 @@
 
 
 const Course = (props) => {
+  console.log(props)
   const title = props.course.name;
   const courseParts = props.course.parts;
   const totalExercises = courseParts.reduce((sum,part) => sum + part.exercises,0)
+
   const PrintParts = () => {
   return (
     courseParts.map((part) =>(
@@ -24,11 +26,23 @@ const Course = (props) => {
   )
 }
 
+const Courses = (props) => {
+  const courses = props.courses
+  console.log(courses)
+  return (
+    props.courses.map((course) => (
+          <Course course={course}/>
+      )
+      )
+  )
+}
+
 
 
 
 const App = () => {  
-  const course = {
+  const course = [
+    {
     name: 'Half Stack application development',
     id: 1,
     parts: [
@@ -53,11 +67,28 @@ const App = () => {
         id: 4
       }
     ]
-  }
+    },
+    {
+      name: 'Node.js',
+      id: 2,
+      parts: [
+        {
+          name: 'Routing',
+          exercises: 3,
+          id: 1
+        },
+        {
+          name: 'Middlewares',
+          exercises: 7,
+          id: 2
+        }
+      ]
+    }
+  ]
 
   return (
     <div>
-      <Course course={course} />
+      <Courses courses = {course} />
     </div>
   )
 }
