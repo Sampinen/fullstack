@@ -1,17 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
+
 
 const PersonsForm = ({AddPerson, newName, handleNameChange,newNumber, handleNumberChange}) => {
   return(
   <>
     <h2>add a new</h2>
-    <form onSubmit={AddPerson}>
+    <form id = "pform"
+    onSubmit={AddPerson}>
       <div>
-        name: <input value = {newName}
+        name: <input 
+        id ="nameinput" 
+        value = {newName}
         onChange={handleNameChange}/>
       </div>
       <div>
-        number: <input value = {newNumber}
+        number: <input 
+        id ="numberinput"
+        value = {newNumber}
         onChange = {handleNumberChange}/>
       </div>
       <div>
@@ -22,19 +28,36 @@ const PersonsForm = ({AddPerson, newName, handleNameChange,newNumber, handleNumb
   )
 }
 
+  const NumbersList = ({personsToShow}) => {
+    return (
+      <>
+        <h2>Numbers</h2>
+        <ul>
+          {personsToShow.map(person =>
+          <p key={person.id}> {person.name} {person.number}</p>
+
+          ) }
+        </ul>
+      </>
+    )
+  }
+
 const FilterForm = ({searchValue,updateSearchValue}) => {
   return(
       <form>
-    filter shown with <input value={searchValue}
+    filter shown with <input 
+    id ="searchinput"
+    value={searchValue}
     onChange={updateSearchValue}/>
     </form>
   )
 }
 
+
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas',
-      number: '044 6789523',
+    { name: 'Erkki Esimerkki',
+      number: '404',
       id: 1
      }
   ]) 
@@ -46,6 +69,17 @@ const App = () => {
     searchValue === ""
     ? persons
     : persons.filter(person => person.name.includes(searchValue))
+
+  useEffect(() => {
+    console.log('effect')
+    axios
+    .get('http://localhost:3001/persons')
+    .then((response) => {
+      console.log('promise fulfilled')
+      setPersons(response.data)
+    })
+  }, [])
+  console.log('render', persons.length, 'notes')
 
   const AddPerson = (event) => {
     event.preventDefault()
@@ -81,20 +115,6 @@ const App = () => {
     setSearchValue(event.target.value)
   }
 
-  const NumbersList = () => {
-    return (
-      <>
-        <h2>Numbers</h2>
-        <ul>
-          {personsToShow.map(person =>
-          <p key={person.id}> {person.name} {person.number}</p>
-
-          ) }
-        </ul>
-      </>
-    )
-  }
-
 
   return (
     <div>
@@ -108,7 +128,7 @@ const App = () => {
       handleNameChange={handleNameChange}
       newNumber={newNumber}
       handleNumberChange={handleNumberChange}/>
-      <NumbersList/>
+      <NumbersList personsToShow={personsToShow}/>
 
     </div>
   )
