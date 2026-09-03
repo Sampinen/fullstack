@@ -61,6 +61,7 @@ const App = () => {
       id: 1
      }
   ]) 
+
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchValue, setSearchValue] = useState('')
@@ -79,6 +80,7 @@ const App = () => {
       setPersons(response.data)
     })
   }, [])
+
   console.log('render', persons.length, 'notes')
 
   const AddPerson = (event) => {
@@ -92,13 +94,20 @@ const App = () => {
     else {
     const personObject = {
       name: newName,
-      number: newNumber,
-      id: persons.length +1
+      number: newNumber
     }
   
-    setPersons(persons.concat(personObject))
+  
+
+    axios
+    .post('http://localhost:3001/persons', personObject)
+    .then(response => {
+    console.log(response)
+    console.log(response.data)
+    setPersons(persons.concat(response.data))
     setNewName('')
     setNewNumber('')
+    })
   }
   }
 
