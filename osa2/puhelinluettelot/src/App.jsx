@@ -28,14 +28,27 @@ const PersonsForm = ({AddPerson, newName, handleNameChange,newNumber, handleNumb
   )
 }
 
-  const NumbersList = ({personsToShow}) => {
+  const NumbersList = ({personsToShow,persons,setPersons}) => {
+    const delPerson = (index)=>{
+      personsService.delObject(index)
+                  .then( () => {
+                        console.log('person deleted'),
+                        setPersons(persons.filter(person => person.id !== index))
+                                }
+                        )
+                      }
     return (
       <>
         <h2>Numbers</h2>
         <ul>
           {personsToShow.map(person =>
-          <p key={person.id}> {person.name} {person.number}</p>
-
+          <p key={person.id}> 
+            {person.name} 
+            {person.number}
+            <button onClick={() =>delPerson(person.id)}>
+              delete
+            </button>
+          </p>
           ) }
         </ul>
       </>
@@ -134,7 +147,7 @@ const App = () => {
       handleNameChange={handleNameChange}
       newNumber={newNumber}
       handleNumberChange={handleNumberChange}/>
-      <NumbersList personsToShow={personsToShow}/>
+      <NumbersList personsToShow={personsToShow} persons={persons} setPersons={setPersons} />
 
     </div>
   )
