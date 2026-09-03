@@ -29,14 +29,19 @@ const PersonsForm = ({AddPerson, newName, handleNameChange,newNumber, handleNumb
 }
 
   const NumbersList = ({personsToShow,persons,setPersons}) => {
-    const delPerson = (index)=>{
-      personsService.delObject(index)
-                  .then( () => {
-                        console.log('person deleted'),
-                        setPersons(persons.filter(person => person.id !== index))
-                                }
-                        )
-                      }
+    const delPerson = (index,name)=>{
+              if (window.confirm(`Are you sure you want to delete ${name}?`)) {
+              personsService.delObject(index)
+                          .then( () => {
+                                console.log('person deleted'),
+                                setPersons(persons.filter(person => person.id !== index))
+                                        }
+                                )
+                              }
+                              else {
+                                console.log('Deletion canceled')
+                              }
+      }
     return (
       <>
         <h2>Numbers</h2>
@@ -45,7 +50,7 @@ const PersonsForm = ({AddPerson, newName, handleNameChange,newNumber, handleNumb
           <p key={person.id}> 
             {person.name} 
             {person.number}
-            <button onClick={() =>delPerson(person.id)}>
+            <button onClick={() =>delPerson(person.id, person.name)}>
               delete
             </button>
           </p>
