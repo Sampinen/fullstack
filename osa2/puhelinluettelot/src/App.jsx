@@ -105,9 +105,18 @@ const App = () => {
     event.preventDefault()
     console.log(event.target)
     const duplicate = persons.find((person)=>person.name === newName)
+    duplicate.number = newNumber
     if (duplicate) {
-      console.log("duplicate name found")
-      alert(newName + " is already added to phonebook")
+      if (window.confirm(`${duplicate.name} is already added to phonebook. Do you want to replace the old number with a new one?`)) {
+        console.log(duplicate)
+        personsService.update(duplicate.id,duplicate)
+        .then( (response) =>
+          setPersons(persons.map(person => person.name !==  newName? person : response.data))
+        )
+      }
+      else {
+        console.log('Number not changed')
+      }
     }
     else {
     const personObject = {
