@@ -126,15 +126,25 @@ const App = () => {
       if (window.confirm(`${duplicate.name} is already added to phonebook. Do you want to replace the old number with a new one?`)) {
         console.log(duplicate)
         personsService.update(duplicate.id,duplicate)
-        .then( (response) =>
+        .then( (response) => {
           setPersons(persons.map(person => person.name !==  newName? person : response.data))
-        )
-        setAlertMessage(`${duplicate.name}: number changed`)
+          setAlertMessage(`${duplicate.name}: number changed`)
         setAlertType("success")
         setTimeout(() => {
           setAlertMessage(null)
           setAlertType(null)
         }, 5000)
+        } )
+        .catch( () => {
+          setAlertMessage(`${duplicate.name} was already deleted`)
+          setAlertType("error")
+          setPersons(persons.filter(n => n.name !== duplicate.name))
+        setTimeout(() => {
+          setAlertMessage(null)
+          setAlertType(null)
+        }, 5000)
+      }
+        )
       }
       else {
         setAlertMessage(`${name}: Number change cancelled`)
