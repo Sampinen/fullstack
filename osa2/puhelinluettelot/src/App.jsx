@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import personsService from './services/persons'
+import Notification from './components/Notification'
 
 
 const PersonsForm = ({AddPerson, newName, handleNameChange,newNumber, handleNumberChange}) => {
@@ -28,7 +29,7 @@ const PersonsForm = ({AddPerson, newName, handleNameChange,newNumber, handleNumb
   )
 }
 
-  const NumbersList = ({personsToShow,persons,setPersons}) => {
+  const NumbersList = ({personsToShow,persons,setPersons,setAlertMessage,setAlertType}) => {
     const delPerson = (index,name)=>{
               if (window.confirm(`Are you sure you want to delete ${name}?`)) {
               personsService.delObject(index)
@@ -36,10 +37,24 @@ const PersonsForm = ({AddPerson, newName, handleNameChange,newNumber, handleNumb
                                 console.log('person deleted'),
                                 setPersons(persons.filter(person => person.id !== index))
                                         }
+                                        
                                 )
+                                  setAlertMessage(`${name} deleted succesfully`)
+                                  setAlertType("success")
+                                  setTimeout(() => {
+                                    setAlertMessage(null)
+                                    setAlertType(null)
+                                  }, 5000)
                               }
                               else {
                                 console.log('Deletion canceled')
+                                  setAlertMessage(`${name}, deletion cancelled`)
+                                  setAlertType("notify")
+                                  setTimeout(() => {
+                                    setAlertMessage(null)
+                                    setAlertType(null)
+                                  }, 5000)
+                          
                               }
       }
     return (
@@ -79,7 +94,8 @@ const App = () => {
       id: 1
      }
   ]) 
-
+  const [alertMessage, setAlertMessage] = useState(null)
+  const [alertType,setAlertType] = useState('notify')
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchValue, setSearchValue] = useState('')
@@ -105,18 +121,31 @@ const App = () => {
     event.preventDefault()
     console.log(event.target)
     const duplicate = persons.find((person)=>person.name === newName)
-    duplicate.number = newNumber
     if (duplicate) {
+      duplicate.number = newNumber
       if (window.confirm(`${duplicate.name} is already added to phonebook. Do you want to replace the old number with a new one?`)) {
         console.log(duplicate)
         personsService.update(duplicate.id,duplicate)
         .then( (response) =>
           setPersons(persons.map(person => person.name !==  newName? person : response.data))
         )
+        setAlertMessage(`${duplicate.name}: number changed`)
+        setAlertType("success")
+        setTimeout(() => {
+          setAlertMessage(null)
+          setAlertType(null)
+        }, 5000)
       }
       else {
-        console.log('Number not changed')
+        setAlertMessage(`${name}: Number change cancelled`)
+        setAlertType("notify")
+        setTimeout(() => {
+          setAlertMessage(null)
+          setAlertType(null)
+        }, 5000)
       }
+    setNewName('')
+    setNewNumber('')
     }
     else {
     const personObject = {
@@ -131,6 +160,13 @@ const App = () => {
     setNewName('')
     setNewNumber('')
     })
+  
+        setAlertMessage(`${personObject.name} added to phonebook`)
+        setAlertType("success")
+        setTimeout(() => {
+          setAlertMessage(null)
+          setAlertType(null)
+        }, 5000)
   }
   
   }
@@ -152,6 +188,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={alertMessage} className={alertType}/>
       <FilterForm 
       searchValue={searchValue}
       updateSearchValue= {updateSearchValue}/>
@@ -161,7 +198,7 @@ const App = () => {
       handleNameChange={handleNameChange}
       newNumber={newNumber}
       handleNumberChange={handleNumberChange}/>
-      <NumbersList personsToShow={personsToShow} persons={persons} setPersons={setPersons} />
+      <NumbersList personsToShow={personsToShow} persons={persons} setPersons={setPersons} setAlertMessage={setAlertMessage} setAlertType={setAlertType} />
 
     </div>
   )
