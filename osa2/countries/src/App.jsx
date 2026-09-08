@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react'
-
+const apiKey = import.meta.env.VITE_API_KEY
 const baseUrl = "https://studies.cs.helsinki.fi/restcountries/api/all"
 
 async function GetData() {
@@ -10,6 +10,13 @@ async function GetData() {
   console.log('respond')
   console.log(response)
   return response
+}
+
+async function WeatherReport (city) {
+  let endpoint = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=no`
+  const request = await fetch(endpoint)
+  const response = await request.json()
+  return (response)
 }
 
 const CountryList = ({countriesToShow}) => {
@@ -37,9 +44,16 @@ const CountryList = ({countriesToShow}) => {
 
 const CountryData = ({country}) => {
   const languages = Object.values(country.languages)
-
-  console.log(languages)
-
+  const [weather, setWeather] = useState(null)
+  const cap = country.capital[0]
+    useEffect(() => {
+    WeatherReport(cap).then(data => {
+      setWeather(data)
+    }).catch(error => {
+      console.log(error.response?.data)
+    })
+    }, [])
+    console.log(weather)
 
   return (
     <>
@@ -53,6 +67,16 @@ const CountryData = ({country}) => {
       {languages.map(lang => <li>{lang}</li>)}
       </ul>
       <img src={country.flags.png} alt={country.flags.alt}></img>
+      <h2>Weather Today:</h2>
+      {weather ? (
+      <>
+      <p>Temparature: {weather.current.temp_c} C</p>
+      <img src={weather.current.condition.icon}alt={weather.current.condition.text}></img>
+      <p>Wind: {weather.current.wind_kph} m/s</p>
+      </>
+      ):
+      <p>loading weather</p>}
+
 
     </>
   )
