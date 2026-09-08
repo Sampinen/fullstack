@@ -13,13 +13,21 @@ async function GetData() {
 }
 
 const CountryList = ({countriesToShow}) => {
-
+  const [showCountry,setCountry] = useState(null)
+  let showCountries
+  if (showCountry) {
+    return <CountryData country={showCountry} />
+  }
   return (
     <>
       <ul>
         {countriesToShow.map(country =>
         <p key={country.ccn3}> 
+
           {country.name.official} 
+            <button onClick={() =>setCountry(country)}>
+              show
+            </button>
         </p>
         ) }
       </ul>
@@ -53,13 +61,14 @@ const CountryData = ({country}) => {
 
 
 const CountrySearch = ({countriesToShow}) => {
+  const [buttonClick,setButtonclick] = useState(false)
+
   let countries
   if (countriesToShow.length > 10) {
       countries= "Too many results"
 
   } else if (countriesToShow.length > 1){
-    countries = <CountryList countriesToShow = {countriesToShow}/>
-
+    countries = <CountryList countriesToShow = {countriesToShow} />
   }
   else if (countriesToShow.length === 1) {
     countries = <CountryData country = {countriesToShow[0]}/>
@@ -91,7 +100,7 @@ const FilterForm = ({searchValue,updateSearchValue}) => {
 const App = () => {
     const [countries, setCountries] = useState([]) 
 
-    const [searchValue, setSearchValue] = useState([])
+    const [searchValue, setSearchValue] = useState('')
     console.log('countries')
     console.log(countries)
     const countriesToShow = 
