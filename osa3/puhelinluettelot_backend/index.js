@@ -59,15 +59,32 @@ app.post('/api/persons', (request, response) => {
     console.log(body)
   if (!body) {
     return response.status(400).json({ 
-      error: `content missing: ${body}` 
+      error: `content missing` 
     })
   }
+  if (!body.name) {
+    return response.status(400).json({ 
+      error: `Name is missing` 
+    })
+  }
+    if (!body.number) {
+    return response.status(400).json({ 
+      error: `Number is missing` 
+    })
+    }
+    const nameExists = persons.find(person => person.name ===body.name)
+    if (nameExists) {
+    return response.status(400).json({ 
+      error: `Name already exists` 
+    })
+    }
 
   const person = {
     name: body.name,
-    number: body.number || false,
+    number: body.number,
     id: Math.floor(Math.random() * 1000000),
   }
+
 
   persons = persons.concat(person)
 
