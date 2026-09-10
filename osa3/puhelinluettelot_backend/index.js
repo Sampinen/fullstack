@@ -6,7 +6,11 @@ const bodyParser = require('body-parser')
 var morgan = require('morgan')
 const app = express()
 app.use(bodyParser.json())
-app.use(morgan('tiny'))
+morgan.token('content',function getBody (req) {
+  return JSON.stringify(req.body)
+})
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
+
 let persons = [
 
 { 
@@ -61,7 +65,6 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
-    console.log(body)
   if (!body) {
     return response.status(400).json({ 
       error: `content missing` 
