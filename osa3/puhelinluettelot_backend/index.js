@@ -35,6 +35,13 @@ app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
 
+app.get('/api/persons/:id', (request, response) => {
+  const id = request.params.id
+  const person = persons.find(person => person.id === id)
+  const isperson = (person ? person : "No person with such id")
+  response.json(isperson)
+})
+
 app.get('/info', (request, response) => {
     const date = new Date()
     response.send(
