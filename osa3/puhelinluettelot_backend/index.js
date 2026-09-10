@@ -1,8 +1,12 @@
+
+
 const http = require('http')
 const express = require('express')
 const bodyParser = require('body-parser')
+var morgan = require('morgan')
 const app = express()
 app.use(bodyParser.json())
+app.use(morgan('tiny'))
 let persons = [
 
 { 
@@ -27,6 +31,7 @@ let persons = [
 }
 
 ]
+
 
 
 app.get('/', (request, response) => {
@@ -98,6 +103,7 @@ app.get('/info', (request, response) => {
         <p>Date:${date.getDate()}.${date.getMonth()}.${date.getFullYear()} (DMY) Time:${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} GMT+0200(Eastern European standard time) </p>`
     )
 })
+
 
 const PORT = 3001
 app.listen(PORT)
