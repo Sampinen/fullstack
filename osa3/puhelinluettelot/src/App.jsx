@@ -63,8 +63,8 @@ const PersonsForm = ({AddPerson, newName, handleNameChange,newNumber, handleNumb
         <ul>
           {personsToShow.map(person =>
           <p key={person.id}> 
-            {person.name} 
-            {person.number}
+            {person.name}:&nbsp;
+            {person.number}&nbsp;
             <button onClick={() =>delPerson(person.id, person.name)}>
               delete
             </button>
@@ -78,7 +78,7 @@ const PersonsForm = ({AddPerson, newName, handleNameChange,newNumber, handleNumb
 const FilterForm = ({searchValue,updateSearchValue}) => {
   return(
       <form>
-    filter shown with <input 
+    Search numbers by name:&nbsp; <input 
     id ="searchinput"
     value={searchValue}
     onChange={updateSearchValue}/>
