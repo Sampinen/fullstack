@@ -1,21 +1,21 @@
 import axios from 'axios'
 
-const baseUrl = "https://fullstack-ys5b.onrender.com/"
+const baseUrl = '/api/persons'
 
 const getAll = () => {
-  return axios.get(`${baseUrl}api/persons`)
+  return axios.get(`${baseUrl}`)
 }
 
 const create = newObject => {
-  return axios.post(`${baseUrl}api/persons`, newObject)
+  return axios.post(`${baseUrl}`, newObject)
 }
 
 const delObject = (id) => {
-  return axios.delete(`${baseUrl}api/persons/${id}`)
+  return axios.delete(`${baseUrl}/${id}`)
 }
 
 const update = async (id, newObject) => {
-  return axios.put(`${baseUrl}api/persons/${id}`, newObject)
+  return axios.put(`${baseUrl}/${id}`, newObject)
 
 }
 
