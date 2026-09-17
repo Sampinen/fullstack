@@ -1,11 +1,12 @@
 
-
+require('dotenv').config()
 const http = require('http')
 const express = require('express')
 const bodyParser = require('body-parser')
 var morgan = require('morgan')
 const app = express()
 const cors = require('cors')
+const Person = require('./models/person.js')
 app.use(express.static('dist'))
 app.use(cors())
 app.use(bodyParser.json())
@@ -13,6 +14,14 @@ morgan.token('content',function getBody (req) {
   return JSON.stringify(req.body)
 })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
+
+
+
+
+// person.save().then(result => {
+//   console.log(`${person.name} saved!`)
+//   mongoose.connection.close()
+// })
 
 let persons = [
 
@@ -46,7 +55,9 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+    Person.find({}).then(persons => {
+      response.json(persons)
+})
 })
 
 app.get('/api/persons/:id', (request, response) => {
