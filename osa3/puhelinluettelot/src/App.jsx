@@ -181,7 +181,7 @@ const App = () => {
     }).catch(error => {
 
       setAlertMessage(<>
-        {JSON.stringify(error.response.data[0])}
+        {JSON.stringify(error.response.data.error)}
       </>)
       setAlertType("error")
       
