@@ -147,7 +147,7 @@ const App = () => {
         )
       }
       else {
-        setAlertMessage(`${name}: Number change cancelled`)
+        setAlertMessage(`${duplicate.name}: Number change cancelled`)
         setAlertType("notify")
         setTimeout(() => {
           setAlertMessage(null)
@@ -169,14 +169,24 @@ const App = () => {
     setPersons(persons.concat(response.data))
     setNewName('')
     setNewNumber('')
+
+
+    setAlertMessage(`${personObject.name} added to phonebook`)
+    setAlertType("success")
+    setTimeout(() => {
+      setAlertMessage(null)
+      setAlertType(null)
+    }, 5000)
+    }).catch(error => {
+      setAlertMessage(error.response.data)
+      setAlertType("error")
+      setTimeout(() => {
+        setAlertMessage(null)
+        setAlertType(null)
+      }, 5000)
+        console.log(error.response.data)
     })
   
-        setAlertMessage(`${personObject.name} added to phonebook`)
-        setAlertType("success")
-        setTimeout(() => {
-          setAlertMessage(null)
-          setAlertType(null)
-        }, 5000)
   }
   
   }
