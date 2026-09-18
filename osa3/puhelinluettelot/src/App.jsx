@@ -129,6 +129,7 @@ const App = () => {
       duplicate.number = newNumber
       if (window.confirm(`${duplicate.name} is already added to phonebook. Do you want to replace the old number with a new one?`)) {
         console.log(duplicate)
+
         personsService.update(duplicate.id,duplicate)
         .then( (response) => {
           setPersons(persons.map(person => person.name !==  newName? person : response.data))
@@ -139,20 +140,7 @@ const App = () => {
           setAlertType(null)
         }, 5000)
         } )
-        .catch( (error) => {
-
-
-        setAlertMessage(<>
-          {JSON.stringify(error.name)}
-        </>)
-        setAlertType("error")
-      
-        setTimeout(() => {
-          setAlertMessage(null)
-          setAlertType(null)
-        }, 5000)
-      }
-        )
+        
       }
       else {
         setAlertMessage(`${duplicate.name}: Number change cancelled`)
