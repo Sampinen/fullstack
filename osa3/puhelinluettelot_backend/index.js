@@ -3,17 +3,21 @@ require('dotenv').config()
 const http = require('http')
 const express = require('express')
 const bodyParser = require('body-parser')
-var morgan = require('morgan')
 const app = express()
+
+var morgan = require('morgan')
+
 const cors = require('cors')
 const Person = require('./models/person.js')
 app.use(express.static('dist'))
+app.use(express.json())
 app.use(cors())
-app.use(bodyParser.json())
 morgan.token('content',function getBody (req) {
   return JSON.stringify(req.body)
 })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
+
+
 
 
 
@@ -59,7 +63,6 @@ app.get('/api/persons', (request, response) => {
       response.json(persons)
 })
     .catch(error => {
-      console.log(error)
       response.status(500).end()
     })
 })
@@ -84,6 +87,25 @@ app.delete('/api/persons/:id', (request, response,next) => {
     .catch(error => next(error))
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+  const { name, number } = request.body
+
+  Person.findById(request.params.id)
+    .then(person => {
+      if (!person) {
+        return response.status(404).end()
+      }
+
+      person.name = name
+      person.number = number
+
+      return person.save().then((updatedPerson) => {
+        response.json(updatedPerson)
+      })
+    })
+    .catch(error => next(error))
+})
+
 
 
 app.post('/api/persons', (request, response) => {
@@ -103,33 +125,40 @@ app.post('/api/persons', (request, response) => {
       error: `Number is missing` 
     })
     }
-    const nameExists = persons.find(person => person.name ===body.name)
-    if (nameExists) {
+  console.log(Person)
+  console.log(body.name)
+  console.log(typeof body.name)
+  const person = new Person( {
+    name: body.name,
+    number: body.number
+  })
+  Person.exists({name: body.name}).then(nameExists => {
+  if (nameExists) {
     return response.status(400).json({ 
       error: `Name already exists` 
     })
-    }
+  } else {
 
-  const person = new Person( {
-    name: body.name,
-    number: body.number,
-    id: Math.floor(Math.random() * 1000000),
-  })
-
-
-  person.save().then(savedPerson => {
+    person.save().then(savedPerson => {
     response.json(savedPerson)
   })
-}
-)
-app.get('/info', (request, response) => {
-    const date = new Date()
-    response.send(
-        `<p> Phonebook has info of ${persons.length} people </p>
-        <p>Date:${date.getDate()}.${date.getMonth()}.${date.getFullYear()} (DMY) Time:${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} GMT+0200(Eastern European standard time) </p>`
-    )
+  }
+  })
+
 })
 
+
+app.get('/info', (request, response,next) => {
+  const date = new Date()
+  Person.find({}).then(persons => 
+      response.send(
+          `<p> Phonebook has info of ${persons.length} people </p>
+          <p>Date:${date.getDate()}.${date.getMonth()}.${date.getFullYear()} (DMY) Time:${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} GMT+0200(Eastern European standard time) </p>`
+      )
+  )
+  .catch(error => next(error))
+})
+    
 
 //Error handling
 
@@ -138,7 +167,6 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
-// olemattomien osoitteiden käsittely
 app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
