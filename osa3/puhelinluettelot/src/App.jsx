@@ -184,7 +184,7 @@ const App = () => {
         setAlertMessage(null)
         setAlertType(null)
       }, 5000)
-        console.log(error.response.json().data)
+        console.log(error.response.data.json())
     })
   
   }
