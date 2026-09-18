@@ -139,10 +139,14 @@ const App = () => {
           setAlertType(null)
         }, 5000)
         } )
-        .catch( () => {
-          setAlertMessage(`${duplicate.name} was already deleted`)
-          setAlertType("error")
-          setPersons(persons.filter(n => n.name !== duplicate.name))
+        .catch( (error) => {
+
+
+        setAlertMessage(<>
+          {JSON.stringify(error.response.data)}
+        </>)
+        setAlertType("error")
+      
         setTimeout(() => {
           setAlertMessage(null)
           setAlertType(null)
