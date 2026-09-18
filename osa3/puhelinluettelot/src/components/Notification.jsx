@@ -1,3 +1,5 @@
+import React from 'react'
+import PropTypes from 'prop-types';
 const Notification = ({ message,className }) => {
     console.log(className)
   if (message === null) {
@@ -9,6 +11,11 @@ const Notification = ({ message,className }) => {
       {message}
     </div>
   )
+}
+Notification.propTypes = {
+  message: PropTypes.any,
+  className: PropTypes.any
+  
 }
 
 export default Notification

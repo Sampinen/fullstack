@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect} from 'react'
+import PropTypes from 'prop-types';
 import personsService from './services/persons'
 import Notification from './components/Notification'
+
 
 
 const PersonsForm = ({AddPerson, newName, handleNameChange,newNumber, handleNumberChange}) => {
@@ -28,6 +30,8 @@ const PersonsForm = ({AddPerson, newName, handleNameChange,newNumber, handleNumb
   </>
   )
 }
+
+
 
   const NumbersList = ({personsToShow,persons,setPersons,setAlertMessage,setAlertType}) => {
     const delPerson = (index,name)=>{
@@ -228,6 +232,23 @@ const App = () => {
 
     </div>
   )
+
+}
+
+App.propTypes = {
+  AddPerson: PropTypes.func,
+  newName: PropTypes.string,
+  handleNameChange: PropTypes.func,
+  newNumber: PropTypes.string,
+  handleNumberChange:PropTypes.func,
+  personsToShow: PropTypes.func,
+  setPersons: PropTypes.func,
+  setAlertMessage: PropTypes.func,
+  setAlertType: PropTypes.func,
+  'persons.filter': PropTypes.func,
+  'personsToShow.map': PropTypes.func,
+  searchValue: PropTypes.string,
+  updateSearchValue: PropTypes.func
 
 }
 
