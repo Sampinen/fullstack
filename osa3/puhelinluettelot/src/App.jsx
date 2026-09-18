@@ -178,7 +178,7 @@ const App = () => {
       setAlertType(null)
     }, 5000)
     }).catch(error => {
-      setAlertMessage(error.response.json().data)
+      setAlertMessage(error.response.data.then(err => err))
       setAlertType("error")
       setTimeout(() => {
         setAlertMessage(null)
