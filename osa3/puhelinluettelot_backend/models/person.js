@@ -8,8 +8,15 @@ mongoose.connect(db_uri, { family: 4 })
 
 
 const personSchema = new mongoose.Schema({
-name: String,
-number: String,
+name: {
+  type: String,
+  required: [true, 'Name cant be empty']
+},
+number:{
+  type: String,
+  minLength: [3,'Number should be minimum of 3 digits'],
+  required: [true, 'Number cant be empty']
+},
 })
 
 personSchema.set('toJSON', {

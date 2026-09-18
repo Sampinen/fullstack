@@ -54,6 +54,9 @@ let persons = [
 
 
 
+
+
+
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
@@ -67,7 +70,7 @@ app.get('/api/persons', (request, response) => {
     })
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response,next) => {
   Person.findById(request.params.id)
     .then(person => {
       if (person) {
@@ -108,7 +111,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 
 
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response,next) => {
   const body = request.body
   if (!body) {
     return response.status(400).json({ 
@@ -125,9 +128,6 @@ app.post('/api/persons', (request, response) => {
       error: `Number is missing` 
     })
     }
-  console.log(Person)
-  console.log(body.name)
-  console.log(typeof body.name)
   const person = new Person( {
     name: body.name,
     number: body.number
@@ -141,7 +141,7 @@ app.post('/api/persons', (request, response) => {
 
     person.save().then(savedPerson => {
     response.json(savedPerson)
-  })
+  }).catch(error => next(error))
   }
   })
 
@@ -159,7 +159,6 @@ app.get('/info', (request, response,next) => {
   .catch(error => next(error))
 })
     
-
 //Error handling
 
 
@@ -175,12 +174,16 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   }
+else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })  
+}
 
   next(error)
 }
 
 
 app.use(errorHandler)
+
 
 
 
