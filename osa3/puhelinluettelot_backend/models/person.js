@@ -14,7 +14,13 @@ name: {
 },
 number:{
   type: String,
-  minLength: [3,'Number should be minimum of 3 digits'],
+    validate: {
+      validator: function(v) {
+        return /^\d{2,3}-(?=(\d+)\d$)/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    },
+  minLength: [8,'Number should be minimum of 8 digits'],
   required: [true, 'Number cant be empty']
 },
 })
