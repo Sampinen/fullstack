@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import personsService from './services/persons'
 import Notification from './components/Notification'
+import { errorMonitor } from 'node:events'
 
 
 const PersonsForm = ({AddPerson, newName, handleNameChange,newNumber, handleNumberChange}) => {
@@ -178,8 +179,8 @@ const App = () => {
       setAlertType(null)
     }, 5000)
     }).catch(error => {
-
-      setAlertMessage(error.response.data)
+      error.response.data(err =>setAlertMessage(err.error))
+  
       setAlertType("error")
       
 
