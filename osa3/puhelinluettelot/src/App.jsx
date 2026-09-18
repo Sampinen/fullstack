@@ -143,7 +143,7 @@ const App = () => {
 
 
         setAlertMessage(<>
-          {JSON.stringify(error.response.data)}
+          {JSON.stringify(error.response)}
         </>)
         setAlertType("error")
       
