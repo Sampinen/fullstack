@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import personsService from './services/persons'
 import Notification from './components/Notification'
-import { errorMonitor } from 'node:events'
 
 
 const PersonsForm = ({AddPerson, newName, handleNameChange,newNumber, handleNumberChange}) => {
