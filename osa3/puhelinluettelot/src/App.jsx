@@ -179,7 +179,7 @@ const App = () => {
     }, 5000)
     }).catch(error => {
 
-      setAlertMessage(error.message)
+      setAlertMessage(console.log(error.response.data))
       setAlertType("error")
       
 
@@ -187,7 +187,7 @@ const App = () => {
         setAlertMessage(null)
         setAlertType(null)
       }, 5000)
-        console.log(error.response.data.json())
+        console.log(error.response.data)
     })
   
   }
