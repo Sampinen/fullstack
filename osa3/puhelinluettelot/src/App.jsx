@@ -139,7 +139,27 @@ const App = () => {
           setAlertMessage(null)
           setAlertType(null)
         }, 5000)
-        } )
+        } ).catch(error => {
+          console.log(typeof error.response.data)
+          if (error.response.data===""){
+            setAlertMessage(duplicate.name +" was already deleted")
+            setPersons(persons.filter(person => person.name !== duplicate.name))
+          }
+          else{
+          setAlertMessage(<>
+            {JSON.stringify(error.response.data)}
+          </>)
+          }
+        setAlertType("error")
+    
+        setTimeout(() => {
+        setAlertMessage(null)
+        setAlertType(null)
+      }, 5000)
+        console.log(error.name)
+        console.log(error.response.data)
+    })
+
         
       }
       else {
@@ -152,13 +172,30 @@ const App = () => {
       }
     setNewName('')
     setNewNumber('')
+    return {}
     }
     else {
     const personObject = {
       name: newName,
       number: newNumber
     }
-    personsService.create(personObject).then(
+    personsService.create(personObject).catch(error => {
+      setNewName('')
+      setNewNumber('')
+
+      setAlertMessage(<>
+        {JSON.stringify(error.response.data)}
+      </>)
+      setAlertType("error")
+      
+
+      setTimeout(() => {
+        setAlertMessage(null)
+        setAlertType(null)
+      }, 5000)
+        console.log(error.name)
+
+    }).then(
       response => {
     console.log(response)
     console.log(response.data)
@@ -173,20 +210,6 @@ const App = () => {
       setAlertMessage(null)
       setAlertType(null)
     }, 5000)
-    }).catch(error => {
-
-      setAlertMessage(<>
-        {JSON.stringify(error.response.data)}
-      </>)
-      setAlertType("error")
-      
-
-      setTimeout(() => {
-        setAlertMessage(null)
-        setAlertType(null)
-      }, 5000)
-        console.log(error.name)
-
     })
   
   }

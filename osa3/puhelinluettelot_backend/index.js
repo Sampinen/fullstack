@@ -1,8 +1,6 @@
 
 require('dotenv').config()
-const http = require('http')
 const express = require('express')
-const bodyParser = require('body-parser')
 const app = express()
 
 var morgan = require('morgan')
@@ -18,54 +16,16 @@ morgan.token('content',function getBody (req) {
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
 
 
-
-
-
-
-// person.save().then(result => {
-//   console.log(`${person.name} saved!`)
-//   mongoose.connection.close()
-// })
-
-let persons = [
-
-{ 
-    "name": "Arto Hellas", 
-    "number": "040-123456",
-    "id": "1"
-},
-{ 
-    "name": "Ada Lovelace", 
-    "number": "39-44-5323523",
-    "id": "2"
-},
-{ 
-    "name": "Dan Abramov", 
-    "number": "12-43-234345",
-    "id": "3"
-},
-{ 
-    "name": "Mary Poppendieck", 
-    "number": "39-23-6423122",
-    "id": "4"
-}
-
-]
-
-
-
-
-
-
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
 app.get('/api/persons', (request, response) => {
-    Person.find({}).then(persons => {
-      response.json(persons)
-})
+  Person.find({}).then(persons => {
+    response.json(persons)
+  })
     .catch(error => {
+      console.log(error.name)
       response.status(500).end()
     })
 })
@@ -76,15 +36,16 @@ app.get('/api/persons/:id', (request, response,next) => {
       if (person) {
         response.json(person)
       } else {
-        response.status(404).end()
+        response.status(404).send({ error: 'unknown endpoint' }).end()
       }    
-})
+    })
     .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response,next) => {
   Person.findByIdAndDelete(request.params.id)    
-  .then(result => {
+    .then(result => {
+      console.log(result)
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -94,17 +55,21 @@ app.put('/api/persons/:id', (request, response, next) => {
   const { name, number } = request.body
 
   Person.findById(request.params.id)
-    .then(person => {
+    .then(async person => {
       if (!person) {
-        return response.status(404).end()
+        response.status(404).send({ error: 'unknown endpoint' }).end()
       }
+      else if (person.name != name) {
+        response.status(400).send({ error: 'Name and id do not match' }).end()
+      }
+      else {
 
-      person.name = name
-      person.number = number
+        person.name = name
+        person.number = number
 
-      return person.save().then((updatedPerson) => {
+        const updatedPerson = await person.save()
         response.json(updatedPerson)
-      })
+      }
     })
     .catch(error => next(error))
 })
@@ -115,69 +80,62 @@ app.post('/api/persons', (request, response,next) => {
   const body = request.body
   if (!body) {
     return response.status(400).json({ 
-      error: `content missing` 
+      error: 'content missing' 
     })
   }
   if (!body.name) {
     return response.status(400).json({ 
-      error: `Name is missing` 
+      error: 'Name is missing' 
     })
   }
-    if (!body.number) {
+  if (!body.number) {
     return response.status(400).json({ 
-      error: `Number is missing` 
+      error: 'Number is missing' 
     })
-    }
+  }
   const person = new Person( {
     name: body.name,
     number: body.number
   })
   Person.exists({name: body.name}).then(nameExists => {
-  if (nameExists) {
-    return response.status(400).json({ 
-      error: `Name already exists` 
-    })
-  } else {
+    if (nameExists) {
+      return response.status(400).json({ 
+        error: 'Name already exists' 
+      })
+    } else {
 
-    person.save().then(savedPerson => {
-    response.json(savedPerson)
-  }).catch(error => next(error))
-  }
+      person.save().then(savedPerson => {
+        response.json(savedPerson)
+      }).catch(error => next(error))
+    }
   })
 
 })
 
 
+
 app.get('/info', (request, response,next) => {
   const date = new Date()
   Person.find({}).then(persons => 
-      response.send(
-          `<p> Phonebook has info of ${persons.length} people </p>
+    response.send(
+      `<p> Phonebook has info of ${persons.length} people </p>
           <p>Date:${date.getDate()}.${date.getMonth()}.${date.getFullYear()} (DMY) Time:${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} GMT+0200(Eastern European standard time) </p>`
-      )
+    )
   )
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
     
 //Error handling
 
-
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
-
-app.use(unknownEndpoint)
-
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
-
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   }
-else if (error.name === 'ValidationError') {
+  else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })  
-}
-
+  }
+  console.log(error.name)
   next(error)
 }
 
@@ -191,4 +149,3 @@ const PORT = process.env.PORT || 10000
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
-console.log(`Server running on port ${PORT}`)

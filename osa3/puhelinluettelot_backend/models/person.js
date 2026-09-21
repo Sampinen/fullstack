@@ -8,21 +8,21 @@ mongoose.connect(db_uri, { family: 4 })
 
 
 const personSchema = new mongoose.Schema({
-name: {
-  type: String,
-  required: [true, 'Name cant be empty']
-},
-number:{
-  type: String,
+  name: {
+    type: String,
+    required: [true, 'Name cant be empty']
+  },
+  number:{
+    type: String,
     validate: {
       validator: function(v) {
-        return /^\d{2,3}-(?=(\d+)\d$)/.test(v);
+        return /^\d{2,3}-(?=(\d+)\d$)/.test(v)
       },
       message: props => `${props.value} is not a valid phone number!`
     },
-  minLength: [8,'Number should be minimum of 8 digits'],
-  required: [true, 'Number cant be empty']
-},
+    minLength: [8,'Number should be minimum of 8 digits'],
+    required: [true, 'Number cant be empty']
+  },
 })
 
 personSchema.set('toJSON', {
@@ -32,10 +32,6 @@ personSchema.set('toJSON', {
     delete returnedObject.__v
   }
 })
-
-
-
-const Person = mongoose.model('Person', personSchema)
 
 
 
