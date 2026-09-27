@@ -38,7 +38,31 @@ const listWithManyBlogs = [
     url: 'https://www.paula.porkkana1123.fi',
     likes: 15,
     __v: 0
-    }
+    },
+    {
+    _id: '83832832838922872189',
+    title: 'Perunatarha',
+    author: 'Samu Peruna',
+    url: 'http://www.sami.perunatarha.fi',
+    likes: 10,
+    __v: 0
+    },
+    {
+    _id: '1759889958588595',
+    title: 'Porkkanakaivo',
+    author: 'Paula Porkkana',
+    url: 'https://www.paula.porkkanakaivo.fi',
+    likes: 1,
+    __v: 0
+    },
+    {
+    _id: '87a1289958588595',
+    title: 'Porkkanakellari',
+    author: 'Paula Porkkana',
+    url: 'https://www.paula.porkkanakellari.fi',
+    likes: 2,
+    __v: 0
+    },
 
 ]
 
@@ -61,7 +85,7 @@ describe('total likes', () => {
     })
     test('of a bigger list is calculated right', () => {
         const result = listHelper.totalLikes(listWithManyBlogs)
-        assert.strictEqual(result,40)
+        assert.strictEqual(result,53)
     })
 
 })
@@ -78,5 +102,44 @@ describe('Most liked blog', () =>{
     test('is the blog with most likes, when there are multiple blogs', () =>{
         const result = listHelper.favoriteBlog(listWithManyBlogs)
         assert.deepStrictEqual(result, listWithManyBlogs[1])
+    })
+})
+
+describe('Author with most blogs', () =>{
+    test('if there are no blogs, author is empty string with -1 blogs', () =>{
+        const result = listHelper.mostBlogs(emptyList)
+        const bestAuthor = {
+            author: "",
+            blogs: -1
+        }  
+        assert.deepStrictEqual(result,bestAuthor)
+    })
+    test('Return correct author and number of blogs from list with multiple authors', () =>{
+        const result = listHelper.mostBlogs(listWithManyBlogs)
+        const bestAuthor = {
+            author: "Paula Porkkana",
+            blogs: 3
+        }
+        assert.deepStrictEqual(result,bestAuthor)
+    })
+
+})
+
+describe('Author with most likes', () => {
+    test('if there are no blogs, author is empty string with -1 likes', () =>{
+        const result = listHelper.mostLikes(emptyList)
+        const bestAuthor = {
+            author: "",
+            likes: -1
+        }  
+        assert.deepStrictEqual(result,bestAuthor)
+    })
+    test('Return correct author and number of likes from list with multiple authors', () =>{
+        const result = listHelper.mostLikes(listWithManyBlogs)
+        const bestAuthor = {
+            author: "Samu Peruna",
+            likes: 30
+        }
+        assert.deepStrictEqual(result,bestAuthor)
     })
 })
