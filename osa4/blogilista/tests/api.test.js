@@ -122,6 +122,24 @@ describe('Adding blogs works correctly', () =>{
   })
 })
 
+describe('Deleting blogs works correctly', ()=>{
+  test('Can delete blog with matching id', async()=> {
+    const response = await api.get('/api/blogs')
+    const validID = response.body[0].id.toString()
+    console.log(validID)
+    await api.delete(`/api/blogs/${validID}`).expect(204)
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length-1)
+  })
+  test('Deleting blog with Id that does not exists does not delete a blog', async () => {
+    await api.delete(`/api/blogs/6ac387c8180fbacf498baa1a`).expect(404)
+    await api.delete(`/api/blogs/6ac387c80fbacf498baa1a`).expect(400)
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+
+  })
+})
+
 
 after(async () => {
   await mongoose.connection.close()
