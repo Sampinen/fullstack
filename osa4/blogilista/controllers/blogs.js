@@ -42,4 +42,22 @@ blogRouter.delete('/:id',async (request,response,next)=> {
   }
 })
 
+blogRouter.put('/:id', async (request, response, next) => {
+  const blog = await Blog.findById(request.params.id)
+  if (!blog) {
+        response.status(404).send({ error: 'unknown endpoint' }).end()
+      }
+  const updatedContent = request.body
+  try {
+    blog.title = updatedContent.title || blog.title
+    blog.author = updatedContent.author || blog.author
+    blog.url = updatedContent.url || blog.url
+    blog.likes = updatedContent.likes || blog.likes
+    const updatedBlog = await blog.save()
+    response.json(updatedBlog)
+  } catch (error) {
+    next(error)
+  }
+})
+
 module.exports = blogRouter

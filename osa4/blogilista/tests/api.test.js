@@ -126,7 +126,6 @@ describe('Deleting blogs works correctly', ()=>{
   test('Can delete blog with matching id', async()=> {
     const response = await api.get('/api/blogs')
     const validID = response.body[0].id.toString()
-    console.log(validID)
     await api.delete(`/api/blogs/${validID}`).expect(204)
     const blogsAtEnd = await helper.blogsInDb()
     assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length-1)
@@ -135,11 +134,37 @@ describe('Deleting blogs works correctly', ()=>{
     await api.delete(`/api/blogs/6ac387c8180fbacf498baa1a`).expect(404)
     await api.delete(`/api/blogs/6ac387c80fbacf498baa1a`).expect(400)
     const blogsAtEnd = await helper.blogsInDb()
+
     assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
 
   })
 })
 
+describe('Updating blog works correctly', ()=>{
+  test('Can edit blog with matching id', async()=>{
+    console.log("Blogs")
+    const response = await api.get('/api/blogs')
+    const validID = response.body[0].id.toString()
+
+    const editBlog = {
+    title: "Banana",
+    url: "https://en.wikipedia.org/wiki/Banana",
+    likes: 6
+    }
+    console.log("api: "+ editBlog)
+
+    await api
+      .put(`/api/blogs/${validID}`)
+      .send(editBlog)
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    const editedBlog = blogsAtEnd[0]
+    assert.strictEqual(editedBlog.title, "Banana")
+    assert.strictEqual(editedBlog.author, "Wikipedia")
+    assert.strictEqual(editedBlog.url, "https://en.wikipedia.org/wiki/Banana")
+    assert.strictEqual(editedBlog.likes, 6)
+  })
+})
 
 after(async () => {
   await mongoose.connection.close()
