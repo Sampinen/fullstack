@@ -36,7 +36,6 @@ const favoriteBlog = (blogs) => {
     }
     blogs.map(larger)
     const type = typeof favorite
-    console.log(type)
     return favorite
 }
 const mostBlogs = (blogs) => {
@@ -45,9 +44,7 @@ const mostBlogs = (blogs) => {
         blogs: -1
     }
     const authors = getAuthors(blogs)
-    console.log(authors)
     const uniqueauthors = getUniqueValues(authors)
-    console.log(uniqueauthors)
     function blogCounter(author){
         const blogCount = authors.filter(auth=>auth===author).length
         if (blogCount > bestAuthor.blogs) {

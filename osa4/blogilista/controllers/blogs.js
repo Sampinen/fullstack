@@ -2,7 +2,6 @@ const blogRouter = require('express').Router()
 const { request } = require('node:http')
 const Blog = require("../models/blog.js")
 const logger = require("../utils/logger.js")
-const { findById } = require('../../../osa3/puhelinluettelot_backend/models/person.js')
 
 logger.blogs(Blog)
 

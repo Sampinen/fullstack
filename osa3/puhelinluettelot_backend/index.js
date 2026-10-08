@@ -13,6 +13,7 @@ app.use(cors())
 morgan.token('content',function getBody (req) {
   return JSON.stringify(req.body)
 })
+
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
 
 
@@ -124,7 +125,7 @@ app.get('/info', (request, response,next) => {
   )
     .catch(error => next(error))
 })
-    
+
 //Error handling
 
 const errorHandler = (error, request, response, next) => {
