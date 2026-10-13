@@ -10,6 +10,7 @@ logger.blogs(Blog)
 
 blogRouter.get('/', async (request, response,next) => {
   const blogs = await Blog.find({})
+  .find({}).populate('user',{ username: 1, name: 1 })
   response.json(blogs)
 })
 
@@ -38,7 +39,7 @@ blogRouter.post('/', async (request, response,next) => {
     author: body.author,
     url: body.url,
     likes: body.likes || 0,
-    userId: user._id
+    user: user
   })
   try {
   const savedBlog = await blog.save()
