@@ -14,21 +14,17 @@ blogRouter.get('/', async (request, response,next) => {
   response.json(blogs)
 })
 
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-}
-
 blogRouter.post('/', async (request, response,next) => {
   const body = request.body
-
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  const typ = typeof request.token
+  console.log("Request token:"+request.token)
+  console.log("Type:"+typ)
+  const token = await request.token
+  const decodedToken = jwt.verify(token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' })
   }
+  console.log(decodedToken)
   const user = await User.findById(decodedToken.id)
 
   if (!user) {
