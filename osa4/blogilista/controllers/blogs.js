@@ -16,15 +16,11 @@ blogRouter.get('/', async (request, response,next) => {
 
 blogRouter.post('/', async (request, response,next) => {
   const body = request.body
-  const typ = typeof request.token
-  console.log("Request token:"+request.token)
-  console.log("Type:"+typ)
   const token = await request.token
   const decodedToken = jwt.verify(token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' })
   }
-  console.log(decodedToken)
   const user = await User.findById(decodedToken.id)
 
   if (!user) {
@@ -51,16 +47,32 @@ blogRouter.post('/', async (request, response,next) => {
 
 blogRouter.delete('/:id',async (request,response,next)=> {
   const requestID = request.params.id
+
   if (requestID.length!=24) {
     return response.status(400).send({ error: 'malformatted id' })
   }
   const blog = await Blog.findById(requestID)
-  if (blog) {
-    await Blog.deleteOne(blog)
-    response.status(204).end()
-  } else {
+  if (!blog) {
     return response.status(404).send({ error: 'Content Not Found' })
   }
+
+  const token = request.token
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+  const user = await User.findById(decodedToken.id)
+  const isAuthorized = blog.user.toString()===user._id.toString()
+  if (!isAuthorized){
+    return response.status(403).json({ error: 'Access forbidden' })
+  }
+  try {
+    await Blog.deleteOne(blog)
+    response.status(204).end()
+  } catch (error) {
+    next(error)
+  }
+
 })
 
 blogRouter.put('/:id', async (request, response, next) => {
