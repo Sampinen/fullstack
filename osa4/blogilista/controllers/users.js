@@ -10,7 +10,7 @@ userRouter.get('/', async (request, response,next) => {
   response.json(users)
 })
 
-userRouter.post('/', async (request, response) => {
+userRouter.post('/', async (request, response, next) => {
   const content = request.body
   if (content.password.length >3){
   const saltRounds = 10
@@ -22,10 +22,12 @@ userRouter.post('/', async (request, response) => {
     name:content.name,
     passwordHash: passwordHash,
   })
-
-  const savedUser = await user.save()
-
-  response.status(201).json(savedUser)
+  try {
+    const savedUser = await user.save()
+    return response.status(201).json(savedUser)
+  } catch (error) {
+    next(error)
+  }
 } else{
   response.status(400).send({ error: 'Password should be minimum of 3 characters' })
 }

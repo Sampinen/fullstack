@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken')
 const Blog = require("../models/blog.js")
 const logger = require("../utils/logger.js")
 const User = require('../models/user')
-const user = require('../models/user')
 logger.blogs(Blog)
 
 blogRouter.get('/', async (request, response,next) => {
@@ -18,6 +17,9 @@ blogRouter.get('/', async (request, response,next) => {
 blogRouter.post('/', async (request, response,next) => {
   const body = request.body
   const token = await request.token
+  if (!token) {
+    return response.status(401).json({ error: 'Unauthorized' })  
+  }
   const decodedToken = jwt.verify(token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' })
@@ -45,7 +47,9 @@ blogRouter.post('/', async (request, response,next) => {
 
 blogRouter.delete('/:id',async (request,response,next)=> {
   const requestID = request.params.id
-
+  if (!request.token) {
+    return response.status(401).json({ error: 'Unauthorized' })  
+  }
   if (requestID.length!=24) {
     return response.status(400).send({ error: 'malformatted id' })
   }
@@ -68,6 +72,9 @@ blogRouter.delete('/:id',async (request,response,next)=> {
 })
 
 blogRouter.put('/:id', async (request, response, next) => {
+  if (!request.token) {
+    return response.status(401).json({ error: 'Unauthorized' })  
+  }
   const blog = await Blog.findById(request.params.id)
   if (!blog) {
         response.status(404).send({ error: 'unknown endpoint' }).end()

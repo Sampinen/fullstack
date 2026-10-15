@@ -28,7 +28,7 @@ describe('when there is initially one user at db', () => {
 
   test('creation succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb()
-
+    console.log(usersAtStart)
     const newUser = {
       username: 'sanna23',
       password: 'salainen',
@@ -41,6 +41,7 @@ describe('when there is initially one user at db', () => {
       .expect('Content-Type', /application\/json/)
 
     const usersAtEnd = await helper.usersInDb()
+    console.log(usersAtEnd)
     assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
 
     const usernames = usersAtEnd.map(u => u.username)
@@ -62,6 +63,7 @@ describe('when there is initially one user at db', () => {
       .expect('Content-Type', /application\/json/)
 
     const usersAtEnd = await helper.usersInDb()
+
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
   })
   test("can't add user with already existing username", async () => {
